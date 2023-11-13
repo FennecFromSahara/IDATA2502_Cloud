@@ -1,0 +1,86 @@
+heat_template_version: 2021-04-16
+
+description: Assignment 4 Infrastructure
+
+parameters:
+  image_id_ubuntu:
+    type: string
+    description: Image ID for Ubuntu instance
+  flavor_id:
+    type: string
+    description: Flavor ID for Ubuntu instance
+  network_name:
+    type: string
+    description: Name of the network
+  router_name:
+    type: string
+    description: Name of the router
+  external_network:
+    type: string
+    description: Name of the external network
+  floating_network:
+    type: string
+    description: Name of the external network for floating IPs
+  subnet_range:
+    type: string
+    default: "192.168.0.0/24" # 192.168.N.0/24 where N is a number from 0 and 255.
+
+resources:
+  my_network:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: network_name }
+
+  my_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: my_network }
+      cidr: { get_param: subnet_range }
+      ip_version: 4
+
+  my_router:
+    type: OS::Neutron::Router
+    properties:
+      name: { get_param: router_name }
+      external_gateway_info:
+        network: { get_param: external_network }
+
+  my_router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: my_router }
+      subnet_id: { get_resource: my_subnet }
+
+  my_ubuntu_instance:
+    type: OS::Nova::Server
+    properties:
+      name: my_ubuntu_instance
+      image: { get_param: image_id_ubuntu }
+      flavor: { get_param: flavor_id }
+      networks:
+        - port: { get_resource: my_ubuntu_port }
+      key_name: MySecondKey # A key pair i created earlier
+
+  my_ubuntu_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: my_network }
+
+  my_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: { get_param: floating_network }
+
+  my_floating_ip_association:
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: { get_resource: my_floating_ip }
+      port_id: { get_resource: my_ubuntu_port }
+
+outputs:
+  ubuntu_instance_ip:
+    description: IP address of the Ubuntu instance
+    value: { get_attr: [my_ubuntu_instance, first_address] }
+  floating_ip:
+    description: Floating IP address
+    value: { get_attr: [my_floating_ip, floating_ip_address] }

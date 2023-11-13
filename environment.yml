@@ -1,0 +1,8 @@
+parameter_defaults:
+  image_id_ubuntu: 7f2988c1-03a3-45c5-9967-a14d451d4dba # Debian 11 (Bullseye) amd64
+  flavor_id: 93447ca2-4273-4f99-b0c3-caa584be0dde # gx2.1c4r
+  network_name: MyStackNetwork
+  subnet_range: 192.168.30.0/24 # 192.168.N.0/24 where N is a number from 0 and 255.
+  router_name: MyStackRouter
+  external_network: ntnu-internal
+  floating_network: ntnu-internal
