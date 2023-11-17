@@ -48,7 +48,7 @@ resource "google_compute_instance" "hello_world_instance" {
     }
   }
 
-  metadata_startup_script = "echo 'Hello, World!' > /var/www/html/index.html"
+  metadata_startup_script = file("./apache2.sh")
 }
 
 output "external_ip" {
