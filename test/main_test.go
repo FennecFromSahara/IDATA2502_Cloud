@@ -14,7 +14,7 @@ func TestTerraformGoogleCloudInstance(t *testing.T) {
 	t.Parallel()
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../",
+		TerraformDir: "../src",
 	})
 
 	defer terraform.Destroy(t, terraformOptions)
