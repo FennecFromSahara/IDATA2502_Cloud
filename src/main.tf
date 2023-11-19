@@ -8,19 +8,19 @@ terraform {
 }
 
 provider "google" {
-  credentials = file("../../Project/analog-reef-399320-e5f4d0d5ea9a.json")
+  credentials = file(var.credentials_file)
 
-  project = "analog-reef-399320"
-  region  = "us-central1"
-  zone    = "us-central1-c"
+  project = var.project
+  region  = var.region
+  zone    = var.zone
 }
 
 resource "google_compute_network" "hello_world_network" {
-  name = "hello-world-network"
+  name = var.network_name
 }
 
-resource "google_compute_firewall" "allow_http" {
-  name    = "allow-http"
+resource "google_compute_firewall" "hello_world_firewall" {
+  name    = var.firewall_name
   network = google_compute_network.hello_world_network.name
 
   allow {
@@ -32,7 +32,7 @@ resource "google_compute_firewall" "allow_http" {
 }
 
 resource "google_compute_instance" "hello_world_instance" {
-  name         = "hello-world-instance"
+  name         = var.instance_name
   machine_type = "e2-micro"
 
   boot_disk {
@@ -44,7 +44,7 @@ resource "google_compute_instance" "hello_world_instance" {
   network_interface {
     network = google_compute_network.hello_world_network.name
     access_config {
-
+      # add empty access_config in order to omit nat_ip
     }
   }
 
