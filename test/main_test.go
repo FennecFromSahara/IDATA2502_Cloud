@@ -27,7 +27,13 @@ func TestTerraformGoogleCloudInstance(t *testing.T) {
 			"network_name":  networkName,
 			"firewall_name": firewallName,
 		},
+
+		EnvVars: map[string]string{
+			"TF_WORKSPACE": "testWorkSpace",
+		},
 	})
+
+	terraform.WorkspaceSelectOrNew(t, terraformOptions, "testWorkSpace")
 
 	defer terraform.Destroy(t, terraformOptions)
 
