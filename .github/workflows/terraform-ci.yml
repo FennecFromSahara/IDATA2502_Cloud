@@ -24,12 +24,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup terraform variables
-        id: vars
-        run: |-
-          cat > pipeline.auto.tfvars <<EOF
-          credentials="${{ secrets.GCP_CREDENTIALS_FILE }}" 
-          EOF
+      # Set up GCP credentials
+      - name: Set up GCP credentials
+        env:
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_FILE }}
+        run: |
+          echo "$GCP_CREDENTIALS" > gcp-credentials.json
+          gcloud auth activate-service-account --key-file=gcp-credentials.json
+          gcloud config set project analog-reef-399320
 
       # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
@@ -38,19 +40,13 @@ jobs:
       # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
         run: terraform init
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_FILE }}
 
       # Generates an execution plan for Terraform
       - name: Terraform Plan
         run: terraform plan -input=false
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_FILE }}
 
         # On push to "main", build or change infrastructure according to Terraform configuration files
         # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_FILE }}
