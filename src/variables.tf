@@ -1,6 +1,10 @@
-variable "project" {}
+variable "project" {
+  default = "analog-reef-399320"
+}
 
-variable "credentials_file" {}
+variable "credentials_file" {
+  default = "../../Project/analog-reef-399320-e5f4d0d5ea9a.json"
+}
 
 variable "region" {
   default = "us-central1"
