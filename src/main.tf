@@ -13,7 +13,8 @@ terraform {
 }
 
 provider "google" {
-  credentials = file(var.credentials_file)
+  # credentials = file(var.credentials_file)
+  credentials = file(fileexists(var.credentials_file) ? var.credentials_file : getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 
   project = var.project
   region  = var.region
