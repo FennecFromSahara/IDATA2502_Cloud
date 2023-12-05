@@ -24,6 +24,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Setup terraform variables
+        id: vars
+        run: |-
+          cat > pipeline.auto.tfvars <<EOF
+          credentials="${{ secrets.GCP_CREDENTIALS_FILE }}" 
+          EOF
+
       # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
