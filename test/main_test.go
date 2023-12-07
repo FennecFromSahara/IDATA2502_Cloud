@@ -44,6 +44,11 @@ func TestTerraformGoogleCloudInstance(t *testing.T) {
 	// Clean up the output
 	externalIP = strings.TrimSpace(strings.ReplaceAll(externalIP, "%0A", ""))
 
+	// Check if the output is surrounded by double quotes, and remove them if present
+	if strings.HasPrefix(externalIP, `"`) && strings.HasSuffix(externalIP, `"`) {
+		externalIP = externalIP[1 : len(externalIP)-1]
+	}
+
 	url := fmt.Sprintf("http://%s:80", externalIP)
 	http_helper.HttpGetWithRetry(t, url, nil, 200, "<!doctype html><html><body><h1>The default webpage has been changed D:</h1></body></html>", 30, 5*time.Second)
 
