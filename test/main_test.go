@@ -41,6 +41,9 @@ func TestTerraformGoogleCloudInstance(t *testing.T) {
 
 	externalIP := terraform.Output(t, terraformOptions, "external_ip")
 
+	// Clean up the output
+	externalIP = strings.TrimSpace(strings.ReplaceAll(externalIP, "%0A", ""))
+
 	url := fmt.Sprintf("http://%s:80", externalIP)
 	http_helper.HttpGetWithRetry(t, url, nil, 200, "<!doctype html><html><body><h1>The default webpage has been changed D:</h1></body></html>", 30, 5*time.Second)
 
