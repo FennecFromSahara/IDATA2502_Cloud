@@ -43,4 +43,17 @@ func TestTerraformGoogleCloudInstance(t *testing.T) {
 
 	url := fmt.Sprintf("http://%s:80", externalIP)
 	http_helper.HttpGetWithRetry(t, url, nil, 200, "<!doctype html><html><body><h1>The default webpage has been changed D:</h1></body></html>", 30, 5*time.Second)
+
+	// Cleanup function that runs after all resources are destroyed
+	t.Cleanup(func() {
+		deleteWorkspaceOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
+			TerraformDir: "../src",
+		})
+
+		// Select default workspace
+		terraform.WorkspaceSelectOrNew(t, deleteWorkspaceOptions, "default")
+
+		// Delete the test workspace
+		terraform.WorkspaceDelete(t, deleteWorkspaceOptions, "testWorkSpace")
+	})
 }
