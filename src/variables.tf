@@ -3,7 +3,7 @@ variable "project" {
 }
 
 variable "credentials_file" {
-  default = "../../Project/analog-reef-399320-e5f4d0d5ea9a.json"
+  default = "gcp-credentials.json"
 }
 
 variable "region" {
