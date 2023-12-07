@@ -12,6 +12,7 @@ jobs:
   terraform:
     name: "Terraform"
     runs-on: ubuntu-latest
+    environment: production
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -27,7 +28,7 @@ jobs:
       # Set up GCP credentials
       - name: Set up GCP credentials
         env:
-          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_FILE }}
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
         run: |
           echo "$GCP_CREDENTIALS" > gcp-credentials.json
           gcloud auth activate-service-account --key-file=gcp-credentials.json
