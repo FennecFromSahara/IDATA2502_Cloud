@@ -50,7 +50,7 @@ jobs:
         run: |
           cd ../test
           go mod tidy
-          go test -v timeout 10m
+          go test -v -timeout 10m
 
   terraform-deploy:
     name: "Terraform deploy"
