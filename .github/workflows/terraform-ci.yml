@@ -35,13 +35,9 @@ jobs:
         with:
           go-version: "1.21.4"
 
-      - name: Terraform Init
-        run: terraform init
-
       - name: Run Terratest
         run: |
           cd ../test
-          go mod tidy
           go test -v -timeout 10m
 
   terraform-deploy:
@@ -65,15 +61,6 @@ jobs:
           GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
         run: |
           echo "$GCP_CREDENTIALS" > gcp-credentials.json
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Plan
-        run: terraform plan -input=false
 
         # On push to "main", build or change infrastructure according to Terraform configuration files
       - name: Terraform Apply
