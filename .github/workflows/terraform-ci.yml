@@ -18,7 +18,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./test
+        working-directory: ./src
 
     steps:
       - name: Checkout code
@@ -47,7 +47,7 @@ jobs:
         run: terraform init
 
       - name: Run Terratest
-        run: go test -v
+        run: go test -v ../test
 
   terraform-deploy:
     name: "Terraform deploy"
