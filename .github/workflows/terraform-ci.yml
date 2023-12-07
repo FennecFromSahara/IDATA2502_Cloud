@@ -24,9 +24,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
-
       # Set up GCP credentials
       - name: Set up GCP credentials
         env:
