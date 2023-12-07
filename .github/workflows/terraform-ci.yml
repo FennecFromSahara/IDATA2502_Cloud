@@ -47,7 +47,9 @@ jobs:
         run: terraform init
 
       - name: Run Terratest
-        run: go test -v ../test
+        run: |
+          cd ../test
+          go test -v
 
   terraform-deploy:
     name: "Terraform deploy"
